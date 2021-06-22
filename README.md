@@ -102,3 +102,17 @@ Git 最核心的一个概念就是工作流。
 > * git push 从本地仓库提交到远程仓库;
 
 一般来说，记住以下命令，便可进行日常工作了
+
+## 业务中使用git解决问题场景
+
+### Git merge和rebase分支合并命令的区别
+
+### git pull 和git pull --rebase 使用
+
+场景1: A同学和B同学同时在分支`feat/demo1`分支开发代码，A同学开发完代码先提交，B同学后开发完代码提交代码，git报错了，提醒我们远程分支有新的commit未同步到本地，无法推送？
+解决方案1: 执行`git pull`,同步远程分支到本地，再提交；
+解决方案2: 执行`git pull --rebase`,同步远程分支到本地，再提交；
+
+tips：
+1. `git pull` 等同于 `git fetch && git merge`;
+2. `git pull rebase` 等同于`git fetch && git rebase`
