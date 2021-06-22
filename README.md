@@ -110,8 +110,28 @@ Git 最核心的一个概念就是工作流。
 ### git pull 和git pull --rebase 使用
 
 场景1: A同学和B同学同时在分支`feat/demo1`分支开发代码，A同学开发完代码先提交，B同学后开发完代码提交代码，git报错了，提醒我们远程分支有新的commit未同步到本地，无法推送？
+
 解决方案1: 执行`git pull`,同步远程分支到本地，再提交；
+
 解决方案2: 执行`git pull --rebase`,同步远程分支到本地，再提交；
+
+对比提交记录：
+![git](./img/001.jpg)
+
+注意事项： 
+* 执行 git pull --rebase 的时候必须保持本地目录干净;
+* 如果出现冲突，可以选择手动解决冲突后继续 rebase，也可以放弃本次 rebase;
+
+解决问题：
+> git add 冲突文件   
+> git rebase --continue
+
+放弃：
+
+> git rebase --abort
+
+总结： 
+多人基于同一个远程分支开发的时候，如果想要顺利 push 又不自动生成 merge commit，可以使用`git pull --rebase`命令，再执行`git push`；
 
 tips：
 1. `git pull` 等同于 `git fetch && git merge`;
