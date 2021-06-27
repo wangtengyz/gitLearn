@@ -295,20 +295,166 @@ J = F^2  = B^3^2   = A^^3^2
 ```
 
 ## git reset(重置)
+如果因为某些原因（比如新提交导致了 BUG，或只是一个 WIP 提交），需要撤回提交，那么可以使用 git reset 指令。 git reset 可以控制当前分支回撤到某次提交时的状态。
 
+### 软重置
+
+```
+git reset --soft HEAD~n
+```
+
+以下图为例：`9e78i` 提交添加了 `style.css` 文件，`035cc` 提交添加了 `index.js` 文件。使用软重置，我们可以撤销提交记录，但是保留新建的 `style.css` 和 `index.js` 文件。
+
+![git-reset](./img/git-reset)
+
+使用 `git status` 指令查看，发现新建的 `style.css` 和 `index.js` 的两个文件还在，不过对应的提交记录已经移除。我们可以对这些文件内容重新编辑，稍后再做提交。
+
+### 硬重置（慎重操作）
+
+```
+git reset --hard HEAD~n
+```
+
+有时重置时，无需保留提交已有的修改，直接将当前分支的状态恢复到某个特定提交下，这种重置称为硬重置，需要注意的是，硬重置还会将当前工作目录（working directory）中的文件、已暂存文件（staged files）全部移除！
+
+![git-reset](./img/git-hard-reset.gif)
+
+使用 git status 查看，发现当前操作空间空空如也。Git 丢弃了 9e78i 和 035cc 两次提交引入的修改，将仓库重置到 ec5be 时的状态。
 
 ## git revert(还原)
 
+```
+git revert 撤销某次操作，此操作不会修改原本的提交记录，而是会新增一条提交记录来抵消某次操作。
+```
+
+举个例子，我们在 ec5be 上添加了 index.js 文件。之后发现并不需要这个文件。那么就可以使用 git revert ec5be 指令还原之前的更改。
+
+![git revert](./img/git-revert.gif)
+
+
+新的提交记录 9e78i 还原了 ec5be 引入的更改。git revert 可以在不修改分支历史的前提下，还原某次提交引入的更改。
+
+git revert 也可以回滚多次的提交
+
+语法：`git revert [commit-id1] [commit-id2] ... `注意这是一个前开后闭区间，即不包括 commit1 ，但包括 commit2 。
+
+使用场景：
+
+1. 项目项目测试中中，测试说要你修改一个历史遗留bug（功能不复杂，但是涉及多个地方）
+2. 你改完提交commit，然后上线的时候，测试说不上了，修复的bug可能需要依赖第三方接口，没协调好，下一版本上；
+3. 一般人就手动改回来，这个时候就可以使用git revert；
+
+或者正常上线项目，发现刚上线的代码有问题，需要项目回滚，前期提交`git rebase`规范只有一条commit记录，使用`git revert`有奇效，
+
+
+tips:
+`git rebase`和 `git revert`概念和使用场景区别？
+
+* git revert 会新建一条 commit 信息，来撤回之前的修改。
+
+*  git reset 会直接将提交记录退回到指定的 commit 上。
+
+* 对于个人的 feature 分支而言，可以使用 git reset 来回退历史记录，之后使用 git push --force 进行推送到远程
+
+* 但是如果是在多人协作的集成分支上，不推荐直接使用 git reset 命令，而是使用更加安全的 git revert 命令进行撤回提交。这样，提交的历史记录不会被抹去，可以安全的进行撤回，对于其他人代码提交无影响。
 
 ### git stash（暂存文件）
 
+基本命令
+
+```
+git stash //把本地的改动暂存起来
+git stash save "message" 执行存储时，添加备注，方便查找。
+git stash pop // 应用最近一次暂存的修改，并删除暂存的记录
+git stash apply  // 应用某个存储,但不会把存储从存储列表中删除，默认使用第一个存储,即 stash@{0}，如果要使用其他个，git stash apply stash@{$num} 。
+git stash list // 查看 stash 有哪些存储
+git stash clear // 删除所有缓存的 stash
+```
+
+使用场景
+
+1. 现在你正在用你的 fate 分支上开发新功能,开发到一半。
+
+2. 这时，生产环境上出现了一个 bug 需要紧急修复，但是你这部分代码还没开发完，不想提交，怎么办？
+
+3. 这个时候可以用 git stash 命令先把工作区已经修改的文件暂存起来，然后切换到 hotfix 分支上进行 bug 的修复，修复完成后，切换回 feature 分支，从堆栈中恢复刚刚保存的内容。
+
+4. 或者你在修复bug过程，比较着急，直接在测试问题改动，这个时候也可以使用git stash,将代码存储，切换到修复分支弹出；
+
+## git reflog
+
+每个人都会犯错，举一个例子：假设你不小心使用 git reset 命令硬重置仓库到某个提交。后面突然想到，重置导致了一些已有的正常代码的误删！
+git reflog 是一个非常有用的命令，用于显示所有已执行操作的日志！包括合并、重置、还原：基本上记录了对分支的任何更改。
+
+![git reflog](./img/git-reflog.gif)
+
+如果你不幸犯错了，你可以使用 git reflog 的信息通过重置 HEAD 轻松地重做此操作！
+
+使用场景：
+
+比如，你和同事一起协作开发功能，准备上线，合并好代码，突然，同事的功能依赖的接口无法上线，只需要上线你的功能，这个时候就可以使用`git reflog`。
+
+![007](./img/007.jpg)
+
+我们不想合并 feat/b 分支了。执行 git reflog 命令，我们看到合并之前的仓库状态位于 HEAD@{1} 这个地方
+
+![008](./img/008.jpg)
+
+我们使用 git reset 指令将 HEAD 头指向 HEAD@{1},即可撤回操作。
+
+```
+git reset HEAD@{1}
+```
+
+![009](./img/009.jpg)
+
+有同事可能想，还没有我手动删除`b.js`文件块？但是如果feat/b涉及几十个文件的变更呢？
 
 ## git cherry-pick(检出提交)
 
+语法：
+```
+git cherry-pick [commit-hash]
+```
+
+多个 cherry-pick 需要同步到目标分支;
+
+```
+git cherry-pick <first-commit-id>...<last-commit-id>
+```
+
+请注意这是一个左开右闭的区间，也就是说 `first-commit-id`提交带来的代码的改动不会被合并过去，如果需要合并过去，可以使用`git cherry-pick <first-commit-id>^...<last-commit-id>`，它表示包含 `first-commit-id` 到 `last-commit-id` 在内的提交都会被合并过去。
+
+如果某个分支上的某次提交的修改正是当前分支需要的，那我们可以使用 cherry-pick 命令检出某次的提交更改作为新的提交添加到当前分支上面。
+
+举个例子（如下图所示）：dev 分支上的 76d12 提交添加了 index.js 文件，我们需要将本次提交更改加入到 master 分支，那么就可以使用 git cherry-pick 76d12 单独检出这条记录修改。
+
+![git cherry-pick](./img/git-chery-pick.gif)
+
+现在 master 分支包含了 76d12 中引入的修改，并添加了一条提交记录 9e78i。
+
+使用场景：
+
+1. A和B同事分别在feat/chert1和feat/chert2分支开发,提交记录如下，都有修复bug的fix记录和开发新功能的feat记录；
+
+![010](./img/010.jpg)
+
+![011](./img/011.jpg)
+
+2. 现在为了产品觉得新功能开发比较久，临死决定先上修复bug的需求，需要把A和B的修复bug先上，功能开发后上；
+
+3. 这个时候，就需要用到`git cherry-pick`,从main主分支切换一个`feat/debug`分支，用来检出两个分支的fix提交.现在，依次执行以下两条指令 `git cherry-pick 912d698`、`git cherry-pick a13dd51`，过程中，如果出现冲突，解决冲突后 进行 git add ，接着执行 `git cherry-pick --continue`。
+
+![012](./img/012.jpg)
+
+4.最后，main 上的提交如下
+
+![013](./img/013.jpg)
 
 ## 不同的工作区域撤销更改
 
 ```
+// 工作区
 // 如果修改了文件，想将它还原；
 git checkout -- <filename>
 // 如果修改了许多文件，想将它全部还原；
@@ -320,7 +466,10 @@ git reset <filename>
 git reset
 
 // 如果文件进了本地仓库，需要回退
-git reset HEAD~ 
+git reset HEAD~n
+
+// 如果进了远程仓库，需要回退
+git revert
 ```
 
 
@@ -345,3 +494,5 @@ ls = log --pretty=format:\"%C(yellow)%h %C(blue)%ad %C(red)%d %C(reset)%s %C(gre
 hist = log --pretty=format:\"%C(yellow)%h %C(red)%d %C(reset)%s %C(green)[%an] %C(blue)%ad\" --topo-order --graph --date=short
 lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 ```
+
+## 已结束
