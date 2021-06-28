@@ -11,7 +11,7 @@ git pull // 获取最新线上代码
 git checkout -b feat/XXX // 切新开发分支
 ====开发====
 git add . // 添加代码到暂存区
-git commit -m "注释 写给自己看或者是领导看" // 提交最好是加注释 防止万一
+git commit -m "注释 写给自己看或者是同事看" // 提交最好是加注释 防止万一
 git push // 推送远程
 ```
 
@@ -48,7 +48,7 @@ Linus Torvalds ，这个人我相信大家都知道吧，开源 Linux 系统的�
 
 ![Linus Torvalds](./img/people.image)
 
-## 为什么要用git
+### 为什么要用git
 
 首先需要了解什么是集中式和分布式版本控制系统
 
@@ -103,9 +103,9 @@ Git 最核心的一个概念就是工作流。
 > * git commit 从暂存区提交到本地仓库;
 > * git push 从本地仓库提交到远程仓库;
 
-一般来说，记住以下命令，便可进行日常工作了
+所以说，记住这些命令，便可进行日常工作了
 
-## 业务中使用git解决问题场景
+## git常用语法和工作场景
 
 ### git fetch(获取)
 
@@ -152,7 +152,7 @@ tips：
 
 一般咱们开发过程中，把一个分支的修改合并到当前分支上，有两种方式`git merge`和`git rebase`(变基)；
 
-#### git merge(合并)
+### git merge(合并)
 
 git merge中有两个合并策略：fast-forward(默认) 和 no-fast-forward。
 
@@ -164,7 +164,7 @@ no-fast-forward：多人在协调开发时常遇到，两个分支对于同一�
 
 ![no-ff](./img/gitmerge-no-ff.gif)
 
-#### git rebase（变基）
+### git rebase（变基）
 
 `git rebase` 指令会`复制`当前分支的所有最新提交，然后将这些提交添加到指定分支提交记录之上;
 
@@ -294,10 +294,10 @@ I = F^   = B^3^    = A^^3^
 J = F^2  = B^3^2   = A^^3^2
 ```
 
-## git reset(重置)
+###git reset(重置)
 如果因为某些原因（比如新提交导致了 BUG，或只是一个 WIP 提交），需要撤回提交，那么可以使用 git reset 指令。 git reset 可以控制当前分支回撤到某次提交时的状态。
 
-### 软重置
+#### 软重置
 
 ```
 git reset --soft HEAD~n
@@ -309,7 +309,7 @@ git reset --soft HEAD~n
 
 使用 `git status` 指令查看，发现新建的 `style.css` 和 `index.js` 的两个文件还在，不过对应的提交记录已经移除。我们可以对这些文件内容重新编辑，稍后再做提交。
 
-### 硬重置（慎重操作）
+#### 硬重置（慎重操作）
 
 ```
 git reset --hard HEAD~n
@@ -321,7 +321,7 @@ git reset --hard HEAD~n
 
 使用 git status 查看，发现当前操作空间空空如也。Git 丢弃了 9e78i 和 035cc 两次提交引入的修改，将仓库重置到 ec5be 时的状态。
 
-## git revert(还原)
+### git revert(还原)
 
 ```
 git revert 撤销某次操作，此操作不会修改原本的提交记录，而是会新增一条提交记录来抵消某次操作。
@@ -381,7 +381,7 @@ git stash clear // 删除所有缓存的 stash
 
 4. 或者你在修复bug过程，比较着急，直接在测试问题改动，这个时候也可以使用git stash,将代码存储，切换到修复分支弹出；
 
-## git reflog
+### git reflog
 
 每个人都会犯错，举一个例子：假设你不小心使用 git reset 命令硬重置仓库到某个提交。后面突然想到，重置导致了一些已有的正常代码的误删！
 git reflog 是一个非常有用的命令，用于显示所有已执行操作的日志！包括合并、重置、还原：基本上记录了对分支的任何更改。
@@ -410,7 +410,7 @@ git reset HEAD@{1}
 
 有同事可能想，还没有我手动删除`b.js`文件块？但是如果feat/b涉及几十个文件的变更呢？
 
-## git cherry-pick(检出提交)
+### git cherry-pick(检出提交)
 
 语法：
 ```
@@ -451,7 +451,7 @@ git cherry-pick <first-commit-id>...<last-commit-id>
 
 ![013](./img/013.jpg)
 
-## 不同的工作区域撤销更改
+### 不同的工作区域撤销更改
 
 ```
 // 工作区
@@ -473,7 +473,7 @@ git revert
 ```
 
 
-## git alias (提升工作效率)
+### git alias (提升工作效率)
 
 ```
 $ git config --global alias.ck checkout
