@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prepare": "husky install",
-    "lint": "eslint src --ext .js,.ts,.tsx --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "eslint src --ext .js,.ts,.tsx --fix"
   },
   "repository": {
     "type": "git",
@@ -19,6 +18,8 @@
   },
   "homepage": "https://github.com/wangtengyz/gitLearn#readme",
   "devDependencies": {
+    "@commitlint/cli": "^16.1.0",
+    "@commitlint/config-conventional": "^16.0.0",
     "eslint": "^8.8.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.3.0",
