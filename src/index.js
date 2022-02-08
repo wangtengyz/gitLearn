@@ -2,7 +2,7 @@
  * @Author: tengye
  * @Date: 2022-02-08 15:31:53
  * @LastEditors: tengye
- * @LastEditTime: 2022-02-08 15:44:55
+ * @LastEditTime: 2022-02-08 17:32:12
  * @FilePath: /src/index.js
  * @Description:
  */
@@ -14,18 +14,5 @@ const func1 = function () {
   const b = 'b同学第二次开发功能';
   return a;
 };
-
-var obj = {
-  a: 1,
-  c: 2,
-};
-
-if {}
-
-if {}
-
-if (a == b) {
-  console.log(123);
-}
 
 export default title;
