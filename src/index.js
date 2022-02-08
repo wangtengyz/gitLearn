@@ -2,7 +2,7 @@
  * @Author: tengye
  * @Date: 2022-02-08 15:31:53
  * @LastEditors: tengye
- * @LastEditTime: 2022-02-08 15:39:36
+ * @LastEditTime: 2022-02-08 15:44:55
  * @FilePath: /src/index.js
  * @Description:
  */
@@ -19,6 +19,8 @@ var obj = {
   a: 1,
   c: 2,
 };
+
+if {}
 
 if {}
 
